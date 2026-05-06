@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GhostUI : MonoBehaviour
 {
@@ -15,6 +16,7 @@ public class GhostUI : MonoBehaviour
 
     [Header("Game Over")]
     public GameObject gameOverPanel;
+    public Button restartButton;
 
     [Header("Ghost References")]
     public GhostStats ghostStats;
@@ -42,6 +44,9 @@ public class GhostUI : MonoBehaviour
             if (sleepButton != null)
                 sleepButton.onClick.AddListener(ghostStats.Sleep);
         }
+
+        if (restartButton != null)
+            restartButton.onClick.AddListener(RestartGame);
     }
 
     private void OnDisable()
@@ -60,6 +65,9 @@ public class GhostUI : MonoBehaviour
             if (sleepButton != null)
                 sleepButton.onClick.RemoveListener(ghostStats.Sleep);
         }
+
+        if (restartButton != null)
+            restartButton.onClick.RemoveListener(RestartGame);
     }
 
     private void UpdateHunger(float value)
@@ -124,5 +132,13 @@ public class GhostUI : MonoBehaviour
             happinessSlider.interactable = false;
         if (energySlider != null)
             energySlider.interactable = false;
+
+        if (restartButton != null)
+            restartButton.interactable = true;
+    }
+
+    private void RestartGame()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }
