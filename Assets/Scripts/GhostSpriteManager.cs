@@ -10,11 +10,21 @@ public class GhostSpriteManager : MonoBehaviour
     public Sprite angrySprite;
     public Sprite normalSprite;
 
-    [Header("Evolution Sprites")]
+    [Header("Baby Evolution Sprites")]
     public Sprite choiceASprite;
     public Sprite choiceBSprite;
     public Sprite choiceCSprite;
     public Sprite randomSprite;
+
+    [Header("Teen Evolution Sprites")]
+    public Sprite teenASprite;
+    public Sprite teenBSprite;
+    public Sprite teenCSprite;
+
+    [Header("Adult Evolution Sprites")]
+    public Sprite adultASprite;
+    public Sprite adultBSprite;
+    public Sprite adultCSprite;
 
     [Header("References")]
     public SpriteRenderer spriteRenderer;
@@ -88,32 +98,68 @@ public class GhostSpriteManager : MonoBehaviour
             spriteRenderer.sprite = nextSprite;
     }
 
-    public void ApplyEvolution(int evolutionChoice)
+    public void ApplyEvolution(GhostEvolution.EvolutionChoice choice, GhostEvolution.EvolutionStage stage)
     {
-        Sprite chosenSprite = GetSpriteForChoice(evolutionChoice);
+        Sprite chosenSprite = GetSpriteForChoice(choice, stage);
         SetEvolutionSprite(chosenSprite);
     }
 
-    private Sprite GetSpriteForChoice(int choice)
+    private Sprite GetSpriteForChoice(GhostEvolution.EvolutionChoice choice, GhostEvolution.EvolutionStage stage)
     {
-        switch (choice)
+        if (stage == GhostEvolution.EvolutionStage.Baby)
         {
-            case 0: // A
-                return choiceASprite;
-            case 1: // B
-                return choiceBSprite;
-            case 2: // C
-                return choiceCSprite;
-            case 3: // Random
-                return GetRandomSprite();
-            default:
-                return normalSprite;
+            return choice switch
+            {
+                GhostEvolution.EvolutionChoice.A => choiceASprite,
+                GhostEvolution.EvolutionChoice.B => choiceBSprite,
+                GhostEvolution.EvolutionChoice.C => choiceCSprite,
+                GhostEvolution.EvolutionChoice.Random => GetRandomBabySprite(),
+                _ => normalSprite
+            };
         }
+        else if (stage == GhostEvolution.EvolutionStage.Teen)
+        {
+            return choice switch
+            {
+                GhostEvolution.EvolutionChoice.A => teenASprite,
+                GhostEvolution.EvolutionChoice.B => teenBSprite,
+                GhostEvolution.EvolutionChoice.C => teenCSprite,
+                GhostEvolution.EvolutionChoice.Random => GetRandomTeenSprite(),
+                _ => normalSprite
+            };
+        }
+        else if (stage == GhostEvolution.EvolutionStage.Adult)
+        {
+            return choice switch
+            {
+                GhostEvolution.EvolutionChoice.A => adultASprite,
+                GhostEvolution.EvolutionChoice.B => adultBSprite,
+                GhostEvolution.EvolutionChoice.C => adultCSprite,
+                GhostEvolution.EvolutionChoice.Random => GetRandomAdultSprite(),
+                _ => normalSprite
+            };
+        }
+
+        return normalSprite;
     }
 
-    private Sprite GetRandomSprite()
+    private Sprite GetRandomBabySprite()
     {
         Sprite[] sprites = new[] { choiceASprite, choiceBSprite, choiceCSprite, randomSprite };
+        int index = UnityEngine.Random.Range(0, sprites.Length);
+        return sprites[index];
+    }
+
+    private Sprite GetRandomTeenSprite()
+    {
+        Sprite[] sprites = new[] { teenASprite, teenBSprite, teenCSprite };
+        int index = UnityEngine.Random.Range(0, sprites.Length);
+        return sprites[index];
+    }
+
+    private Sprite GetRandomAdultSprite()
+    {
+        Sprite[] sprites = new[] { adultASprite, adultBSprite, adultCSprite };
         int index = UnityEngine.Random.Range(0, sprites.Length);
         return sprites[index];
     }
@@ -126,6 +172,6 @@ public class GhostSpriteManager : MonoBehaviour
 
     private void OnEvolutionChosen(GhostEvolution.EvolutionChoice choice, GhostEvolution.EvolutionStage stage)
     {
-        ApplyEvolution((int)choice);
+        ApplyEvolution(choice, stage);
     }
 }
