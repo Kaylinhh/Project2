@@ -56,18 +56,44 @@ public class GhostUI : MonoBehaviour
     private void UpdateHunger(float value)
     {
         if (hungerSlider != null)
+        {
             hungerSlider.value = value;
+            SetSliderColor(hungerSlider, value);
+        }
     }
 
     private void UpdateHappiness(float value)
     {
         if (happinessSlider != null)
+        {
             happinessSlider.value = value;
+            SetSliderColor(happinessSlider, value);
+        }
     }
 
     private void UpdateEnergy(float value)
     {
         if (energySlider != null)
+        {
             energySlider.value = value;
+            SetSliderColor(energySlider, value);
+        }
+    }
+
+    private void SetSliderColor(Slider slider, float value)
+    {
+        if (slider.fillRect == null)
+            return;
+
+        Image fillImage = slider.fillRect.GetComponent<Image>();
+        if (fillImage == null)
+            return;
+
+        if (value < 30f)
+            fillImage.color = Color.red;
+        else if (value < 60f)
+            fillImage.color = new Color(1f, 0.64f, 0f); // orange
+        else
+            fillImage.color = Color.green;
     }
 }
