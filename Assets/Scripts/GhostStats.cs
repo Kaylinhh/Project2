@@ -21,9 +21,15 @@ public class GhostStats : MonoBehaviour
     public Action<float> OnHungerChanged;
     public Action<float> OnHappinessChanged;
     public Action<float> OnEnergyChanged;
+    public Action OnGameOver;
+
+    private bool isGameOver;
 
     private void Update()
     {
+        if (isGameOver)
+            return;
+
         // Decrease stats automatically over time
         SetHunger(hunger - hungerDecreaseRate * Time.deltaTime);
         SetHappiness(happiness - happinessDecreaseRate * Time.deltaTime);
@@ -61,6 +67,7 @@ public class GhostStats : MonoBehaviour
 
         hunger = clamped;
         OnHungerChanged?.Invoke(hunger);
+        CheckGameOver();
     }
 
     private void SetHappiness(float value)
@@ -71,6 +78,7 @@ public class GhostStats : MonoBehaviour
 
         happiness = clamped;
         OnHappinessChanged?.Invoke(happiness);
+        CheckGameOver();
     }
 
     private void SetEnergy(float value)
@@ -81,6 +89,19 @@ public class GhostStats : MonoBehaviour
 
         energy = clamped;
         OnEnergyChanged?.Invoke(energy);
+        CheckGameOver();
+    }
+
+    private void CheckGameOver()
+    {
+        if (isGameOver)
+            return;
+
+        if (hunger <= 0f || happiness <= 0f || energy <= 0f)
+        {
+            isGameOver = true;
+            OnGameOver?.Invoke();
+        }
     }
 
     // Getters to access stats

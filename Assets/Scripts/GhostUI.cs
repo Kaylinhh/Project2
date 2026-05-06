@@ -13,16 +13,24 @@ public class GhostUI : MonoBehaviour
     public Button playButton;
     public Button sleepButton;
 
+    [Header("Game Over")]
+    public GameObject gameOverPanel;
+
     [Header("Ghost References")]
     public GhostStats ghostStats;
 
     private void OnEnable()
     {
+        if (gameOverPanel != null)
+            gameOverPanel.SetActive(false);
+
+    
         if (ghostStats != null)
         {
             ghostStats.OnHungerChanged += UpdateHunger;
             ghostStats.OnHappinessChanged += UpdateHappiness;
             ghostStats.OnEnergyChanged += UpdateEnergy;
+            ghostStats.OnGameOver += HandleGameOver;
         }
 
         if (ghostStats != null)
@@ -43,6 +51,7 @@ public class GhostUI : MonoBehaviour
             ghostStats.OnHungerChanged -= UpdateHunger;
             ghostStats.OnHappinessChanged -= UpdateHappiness;
             ghostStats.OnEnergyChanged -= UpdateEnergy;
+            ghostStats.OnGameOver -= HandleGameOver;
 
             if (feedButton != null)
                 feedButton.onClick.RemoveListener(ghostStats.Feed);
@@ -95,5 +104,25 @@ public class GhostUI : MonoBehaviour
             fillImage.color = new Color(1f, 0.64f, 0f); // orange
         else
             fillImage.color = Color.green;
+    }
+
+    private void HandleGameOver()
+    {
+        if (gameOverPanel != null)
+            gameOverPanel.SetActive(true);
+
+        if (feedButton != null)
+            feedButton.interactable = false;
+        if (playButton != null)
+            playButton.interactable = false;
+        if (sleepButton != null)
+            sleepButton.interactable = false;
+
+        if (hungerSlider != null)
+            hungerSlider.interactable = false;
+        if (happinessSlider != null)
+            happinessSlider.interactable = false;
+        if (energySlider != null)
+            energySlider.interactable = false;
     }
 }
