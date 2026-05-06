@@ -3,13 +3,6 @@ using UnityEngine;
 
 public class GhostSpriteManager : MonoBehaviour
 {
-    [Header("Sprites")]
-    public Sprite asleepSprite;
-    public Sprite sadSprite;
-    public Sprite famishedSprite;
-    public Sprite angrySprite;
-    public Sprite normalSprite;
-
     [Header("Baby Evolution Sprites")]
     public Sprite choiceASprite;
     public Sprite choiceBSprite;
@@ -28,74 +21,18 @@ public class GhostSpriteManager : MonoBehaviour
 
     [Header("References")]
     public SpriteRenderer spriteRenderer;
-    public GhostStats ghostStats;
     public GhostEvolution ghostEvolution;
 
     private void OnEnable()
     {
-        if (ghostStats != null)
-        {
-            ghostStats.OnHungerChanged += OnStatChanged;
-            ghostStats.OnHappinessChanged += OnStatChanged;
-            ghostStats.OnEnergyChanged += OnStatChanged;
-            UpdateSprite();
-        }
-
         if (ghostEvolution != null)
             ghostEvolution.OnEvolutionSelected += OnEvolutionChosen;
     }
 
     private void OnDisable()
     {
-        if (ghostStats != null)
-        {
-            ghostStats.OnHungerChanged -= OnStatChanged;
-            ghostStats.OnHappinessChanged -= OnStatChanged;
-            ghostStats.OnEnergyChanged -= OnStatChanged;
-        }
-
         if (ghostEvolution != null)
             ghostEvolution.OnEvolutionSelected -= OnEvolutionChosen;
-    }
-
-    private void OnStatChanged(float _)
-    {
-        UpdateSprite();
-    }
-
-    private void UpdateSprite()
-    {
-        if (spriteRenderer == null || ghostStats == null)
-            return;
-
-        float hunger = ghostStats.GetHunger();
-        float happiness = ghostStats.GetHappiness();
-        float energy = ghostStats.GetEnergy();
-
-        bool isAsleep = energy < 30f;
-        bool isSad = happiness < 30f;
-        bool isFamished = hunger < 30f;
-        int lowCount = 0;
-
-        if (isAsleep) lowCount++;
-        if (isSad) lowCount++;
-        if (isFamished) lowCount++;
-
-        Sprite nextSprite = normalSprite;
-
-        if (lowCount >= 2)
-            nextSprite = angrySprite;
-        else if (isAsleep)
-            nextSprite = asleepSprite;
-        else if (isSad)
-            nextSprite = sadSprite;
-        else if (isFamished)
-            nextSprite = famishedSprite;
-        else
-            nextSprite = normalSprite;
-
-        if (nextSprite != null)
-            spriteRenderer.sprite = nextSprite;
     }
 
     public void ApplyEvolution(GhostEvolution.EvolutionChoice choice, GhostEvolution.EvolutionStage stage)
@@ -114,7 +51,7 @@ public class GhostSpriteManager : MonoBehaviour
                 GhostEvolution.EvolutionChoice.B => choiceBSprite,
                 GhostEvolution.EvolutionChoice.C => choiceCSprite,
                 GhostEvolution.EvolutionChoice.Random => GetRandomBabySprite(),
-                _ => normalSprite
+                _ => null
             };
         }
         else if (stage == GhostEvolution.EvolutionStage.Teen)
@@ -125,7 +62,7 @@ public class GhostSpriteManager : MonoBehaviour
                 GhostEvolution.EvolutionChoice.B => teenBSprite,
                 GhostEvolution.EvolutionChoice.C => teenCSprite,
                 GhostEvolution.EvolutionChoice.Random => GetRandomTeenSprite(),
-                _ => normalSprite
+                _ => null
             };
         }
         else if (stage == GhostEvolution.EvolutionStage.Adult)
@@ -136,11 +73,11 @@ public class GhostSpriteManager : MonoBehaviour
                 GhostEvolution.EvolutionChoice.B => adultBSprite,
                 GhostEvolution.EvolutionChoice.C => adultCSprite,
                 GhostEvolution.EvolutionChoice.Random => GetRandomAdultSprite(),
-                _ => normalSprite
+                _ => null
             };
         }
 
-        return normalSprite;
+        return null;
     }
 
     private Sprite GetRandomBabySprite()
