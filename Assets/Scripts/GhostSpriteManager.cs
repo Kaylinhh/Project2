@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class GhostSpriteManager : MonoBehaviour
@@ -9,9 +10,16 @@ public class GhostSpriteManager : MonoBehaviour
     public Sprite angrySprite;
     public Sprite normalSprite;
 
+    [Header("Evolution Sprites")]
+    public Sprite choiceASprite;
+    public Sprite choiceBSprite;
+    public Sprite choiceCSprite;
+    public Sprite randomSprite;
+
     [Header("References")]
     public SpriteRenderer spriteRenderer;
     public GhostStats ghostStats;
+    public GhostEvolution ghostEvolution;
 
     private void OnEnable()
     {
@@ -22,6 +30,9 @@ public class GhostSpriteManager : MonoBehaviour
             ghostStats.OnEnergyChanged += OnStatChanged;
             UpdateSprite();
         }
+
+        if (ghostEvolution != null)
+            ghostEvolution.OnEvolutionSelected += OnEvolutionChosen;
     }
 
     private void OnDisable()
@@ -32,6 +43,9 @@ public class GhostSpriteManager : MonoBehaviour
             ghostStats.OnHappinessChanged -= OnStatChanged;
             ghostStats.OnEnergyChanged -= OnStatChanged;
         }
+
+        if (ghostEvolution != null)
+            ghostEvolution.OnEvolutionSelected -= OnEvolutionChosen;
     }
 
     private void OnStatChanged(float _)
@@ -59,17 +73,6 @@ public class GhostSpriteManager : MonoBehaviour
 
         Sprite nextSprite = normalSprite;
 
-        if (isAsleep)
-            nextSprite = asleepSprite;
-        else if (lowCount >= 2)
-            nextSprite = angrySprite;
-        else if (isSad)
-            nextSprite = sadSprite;
-        else if (isFamished)
-            nextSprite = famishedSprite;
-        else
-            nextSprite = normalSprite;
-
         if (lowCount >= 2)
             nextSprite = angrySprite;
         else if (isAsleep)
@@ -83,5 +86,46 @@ public class GhostSpriteManager : MonoBehaviour
 
         if (nextSprite != null)
             spriteRenderer.sprite = nextSprite;
+    }
+
+    public void ApplyEvolution(int evolutionChoice)
+    {
+        Sprite chosenSprite = GetSpriteForChoice(evolutionChoice);
+        SetEvolutionSprite(chosenSprite);
+    }
+
+    private Sprite GetSpriteForChoice(int choice)
+    {
+        switch (choice)
+        {
+            case 0: // A
+                return choiceASprite;
+            case 1: // B
+                return choiceBSprite;
+            case 2: // C
+                return choiceCSprite;
+            case 3: // Random
+                return GetRandomSprite();
+            default:
+                return normalSprite;
+        }
+    }
+
+    private Sprite GetRandomSprite()
+    {
+        Sprite[] sprites = new[] { choiceASprite, choiceBSprite, choiceCSprite, randomSprite };
+        int index = UnityEngine.Random.Range(0, sprites.Length);
+        return sprites[index];
+    }
+
+    private void SetEvolutionSprite(Sprite sprite)
+    {
+        if (spriteRenderer != null && sprite != null)
+            spriteRenderer.sprite = sprite;
+    }
+
+    private void OnEvolutionChosen(GhostEvolution.EvolutionChoice choice, GhostEvolution.EvolutionStage stage)
+    {
+        ApplyEvolution((int)choice);
     }
 }
