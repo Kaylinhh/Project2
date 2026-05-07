@@ -130,6 +130,7 @@ GameObject:
   - component: {fileID: 56839235}
   - component: {fileID: 56839234}
   - component: {fileID: 56839236}
+  - component: {fileID: 56839237}
   m_Layer: 0
   m_Name: Ghost
   m_TagString: Untagged
@@ -232,6 +233,23 @@ MonoBehaviour:
   adultCSprite: {fileID: 21300000, guid: 2cd79451e9cd81b4b9171984ddc01da6, type: 3}
   spriteRenderer: {fileID: 56839234}
   ghostEvolution: {fileID: 1977448930}
+--- !u!114 &56839237
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 56839233}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c97b2e6d72e1fd4ca43309979fdc5b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GhostAnimation
+  moveDistance: 4
+  moveSpeed: 1
+  startRight: 1
+  useLocalPosition: 1
+  spriteRenderer: {fileID: 56839234}
 --- !u!1 &106263822
 GameObject:
   m_ObjectHideFlags: 0
