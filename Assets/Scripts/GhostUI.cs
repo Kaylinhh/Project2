@@ -119,12 +119,7 @@ public class GhostUI : MonoBehaviour
         if (gameOverPanel != null)
             gameOverPanel.SetActive(true);
 
-        if (feedButton != null)
-            feedButton.interactable = false;
-        if (playButton != null)
-            playButton.interactable = false;
-        if (sleepButton != null)
-            sleepButton.interactable = false;
+        SetActionButtonsInteractable(false);
 
         if (hungerSlider != null)
             hungerSlider.interactable = false;
@@ -135,6 +130,16 @@ public class GhostUI : MonoBehaviour
 
         if (restartButton != null)
             restartButton.interactable = true;
+    }
+
+    public void SetActionButtonsInteractable(bool interactable)
+    {
+        if (feedButton != null)
+            feedButton.interactable = interactable;
+        if (playButton != null)
+            playButton.interactable = interactable;
+        if (sleepButton != null)
+            sleepButton.interactable = interactable;
     }
 
     private void RestartGame()

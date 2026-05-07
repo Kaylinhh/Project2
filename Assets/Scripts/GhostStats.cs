@@ -24,16 +24,27 @@ public class GhostStats : MonoBehaviour
     public Action OnGameOver;
 
     private bool isGameOver;
+    private bool pauseStatDecay;
 
     private void Update()
     {
-        if (isGameOver)
+        if (isGameOver || pauseStatDecay)
             return;
 
         // Decrease stats automatically over time
         SetHunger(hunger - hungerDecreaseRate * Time.deltaTime);
         SetHappiness(happiness - happinessDecreaseRate * Time.deltaTime);
         SetEnergy(energy - energyDecreaseRate * Time.deltaTime);
+    }
+
+    public void PauseStatDecay()
+    {
+        pauseStatDecay = true;
+    }
+
+    public void ResumeStatDecay()
+    {
+        pauseStatDecay = false;
     }
 
     /// <summary>Feed the ghost (decreases Hunger)</summary>

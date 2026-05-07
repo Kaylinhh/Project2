@@ -3,11 +3,8 @@ using UnityEngine;
 
 public class GhostSpriteManager : MonoBehaviour
 {
-    [Header("Baby Evolution Sprites")]
-    public Sprite choiceASprite;
-    public Sprite choiceBSprite;
-    public Sprite choiceCSprite;
-    public Sprite randomSprite;
+
+    public Sprite babySprite;
 
     [Header("Teen Evolution Sprites")]
     public Sprite teenASprite;
@@ -22,6 +19,11 @@ public class GhostSpriteManager : MonoBehaviour
     [Header("References")]
     public SpriteRenderer spriteRenderer;
     public GhostEvolution ghostEvolution;
+
+    private void Start()
+    {
+        SetEvolutionSprite(babySprite);
+    }
 
     private void OnEnable()
     {
@@ -45,14 +47,7 @@ public class GhostSpriteManager : MonoBehaviour
     {
         if (stage == GhostEvolution.EvolutionStage.Baby)
         {
-            return choice switch
-            {
-                GhostEvolution.EvolutionChoice.A => choiceASprite,
-                GhostEvolution.EvolutionChoice.B => choiceBSprite,
-                GhostEvolution.EvolutionChoice.C => choiceCSprite,
-                GhostEvolution.EvolutionChoice.Random => GetRandomBabySprite(),
-                _ => null
-            };
+            return babySprite;
         }
         else if (stage == GhostEvolution.EvolutionStage.Teen)
         {
@@ -80,13 +75,6 @@ public class GhostSpriteManager : MonoBehaviour
         return null;
     }
 
-    private Sprite GetRandomBabySprite()
-    {
-        Sprite[] sprites = new[] { choiceASprite, choiceBSprite, choiceCSprite, randomSprite };
-        int index = UnityEngine.Random.Range(0, sprites.Length);
-        return sprites[index];
-    }
-
     private Sprite GetRandomTeenSprite()
     {
         Sprite[] sprites = new[] { teenASprite, teenBSprite, teenCSprite };
@@ -109,6 +97,8 @@ public class GhostSpriteManager : MonoBehaviour
 
     private void OnEvolutionChosen(GhostEvolution.EvolutionChoice choice, GhostEvolution.EvolutionStage stage)
     {
-        ApplyEvolution(choice, stage);
+        
+    Debug.Log($"Evolution reçue : {choice} / {stage}");
+    ApplyEvolution(choice, stage);
     }
 }

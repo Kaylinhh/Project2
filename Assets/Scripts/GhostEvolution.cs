@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class GhostEvolution : MonoBehaviour
 {
@@ -25,7 +26,7 @@ public class GhostEvolution : MonoBehaviour
 
     [Header("UI")]
     public GameObject evolutionPopup;
-    public Text evolutionText;
+    public TextMeshProUGUI evolutionText;
     public Button choiceAButton;
     public Button choiceBButton;
     public Button choiceCButton;
@@ -33,6 +34,7 @@ public class GhostEvolution : MonoBehaviour
 
     [Header("References")]
     public GhostStats ghostStats;
+    public GhostUI ghostUI;
 
     private float elapsedTime;
     private float nextEvolutionDelay;
@@ -106,16 +108,21 @@ public class GhostEvolution : MonoBehaviour
 
         evolutionPopup.SetActive(true);
         popupOpen = true;
+        ghostStats?.PauseStatDecay();
+        ghostUI?.SetActionButtonsInteractable(false);
     }
 
     private void HandleChoice(EvolutionChoice choice)
     {
+        AdvanceStage();
+        
         if (evolutionPopup != null)
             evolutionPopup.SetActive(false);
 
         popupOpen = false;
+        ghostStats?.ResumeStatDecay();
+        ghostUI?.SetActionButtonsInteractable(true);
         OnEvolutionSelected?.Invoke(choice, currentStage);
-        AdvanceStage();
     }
 
     private void AdvanceStage()
