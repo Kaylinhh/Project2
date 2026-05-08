@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class GhostUI : MonoBehaviour
 {
@@ -18,11 +19,19 @@ public class GhostUI : MonoBehaviour
     public GameObject gameOverPanel;
     public Button restartButton;
 
+    [Header("End Game")]
+    public GameObject endGamePanel;
+    public Button endGameRestartButton;
+
     [Header("Ghost References")]
     public GhostStats ghostStats;
+    public GhostEvolution ghostEvolution;
+    public GhostAnimation ghostAnimation;
 
     private void OnEnable()
     {
+        Debug.Log($"GhostUI OnEnable — ghostEvolution: {ghostEvolution}");
+
         if (gameOverPanel != null)
             gameOverPanel.SetActive(false);
 
@@ -33,6 +42,11 @@ public class GhostUI : MonoBehaviour
             ghostStats.OnHappinessChanged += UpdateHappiness;
             ghostStats.OnEnergyChanged += UpdateEnergy;
             ghostStats.OnGameOver += HandleGameOver;
+        }
+
+        if (ghostEvolution != null)
+        {
+            ghostEvolution.OnAdultReached += HandleEndGame;
         }
 
         if (ghostStats != null)
@@ -47,6 +61,9 @@ public class GhostUI : MonoBehaviour
 
         if (restartButton != null)
             restartButton.onClick.AddListener(RestartGame);
+
+        if (endGameRestartButton != null)
+            endGameRestartButton.onClick.AddListener(RestartGame);
     }
 
     private void OnDisable()
@@ -66,8 +83,16 @@ public class GhostUI : MonoBehaviour
                 sleepButton.onClick.RemoveListener(ghostStats.Sleep);
         }
 
+        if (ghostEvolution != null)
+        {
+            ghostEvolution.OnAdultReached -= HandleEndGame;
+        }
+
         if (restartButton != null)
             restartButton.onClick.RemoveListener(RestartGame);
+
+        if (endGameRestartButton != null)
+            endGameRestartButton.onClick.RemoveListener(RestartGame);
     }
 
     private void UpdateHunger(float value)
@@ -119,6 +144,9 @@ public class GhostUI : MonoBehaviour
         if (gameOverPanel != null)
             gameOverPanel.SetActive(true);
 
+        if (ghostAnimation != null)
+            ghostAnimation.enabled = false;
+
         SetActionButtonsInteractable(false);
 
         if (hungerSlider != null)
@@ -130,6 +158,28 @@ public class GhostUI : MonoBehaviour
 
         if (restartButton != null)
             restartButton.interactable = true;
+    }
+
+    private void HandleEndGame()
+    {
+        Debug.Log("HandleEndGame called");
+        ghostStats?.EndGame();
+        StartCoroutine(ShowEndGamePanelAfterDelay(3f));
+    }
+
+    private IEnumerator ShowEndGamePanelAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        if (endGamePanel != null)
+            endGamePanel.SetActive(true);
+
+        if (ghostAnimation != null)
+            ghostAnimation.enabled = false;
+
+        SetActionButtonsInteractable(false);
+
+        if (endGameRestartButton != null)
+            endGameRestartButton.interactable = true;
     }
 
     public void SetActionButtonsInteractable(bool interactable)

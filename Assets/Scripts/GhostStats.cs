@@ -28,6 +28,8 @@ public class GhostStats : MonoBehaviour
 
     private void Update()
     {
+        Debug.Log($"Update on {gameObject.name} — instanceID: {GetInstanceID()}, pauseStatDecay: {pauseStatDecay}");
+
         if (isGameOver || pauseStatDecay)
             return;
 
@@ -39,12 +41,22 @@ public class GhostStats : MonoBehaviour
 
     public void PauseStatDecay()
     {
+        Debug.Log($"PauseStatDecay called on {gameObject.name} — instanceID: {GetInstanceID()}");
         pauseStatDecay = true;
     }
 
     public void ResumeStatDecay()
     {
         pauseStatDecay = false;
+    }
+
+    public void EndGame()
+    {
+        if (isGameOver)
+            return;
+
+        isGameOver = true;
+        pauseStatDecay = true;
     }
 
     /// <summary>Feed the ghost (decreases Hunger)</summary>
@@ -110,10 +122,11 @@ public class GhostStats : MonoBehaviour
 
         if (hunger <= 0f || happiness <= 0f || energy <= 0f)
         {
-            isGameOver = true;
+            EndGame();
             OnGameOver?.Invoke();
         }
     }
+    
 
     // Getters to access stats
     public float GetHunger() => hunger;

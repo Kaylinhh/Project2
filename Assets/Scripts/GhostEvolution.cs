@@ -21,12 +21,13 @@ public class GhostEvolution : MonoBehaviour
     }
 
     [Header("Timing")]
-    public float firstEvolutionDelay = 60f;
-    public float evolutionRepeatInterval = 120f;
+    public float firstEvolutionDelay = 10f;
+    public float evolutionRepeatInterval = 5f;
 
     [Header("UI")]
     public GameObject evolutionPopup;
     public TextMeshProUGUI evolutionText;
+    public TextMeshProUGUI countdownText;
     public Button choiceAButton;
     public Button choiceBButton;
     public Button choiceCButton;
@@ -42,6 +43,7 @@ public class GhostEvolution : MonoBehaviour
     private EvolutionStage currentStage;
 
     public event Action<EvolutionChoice, EvolutionStage> OnEvolutionSelected;
+    public event Action OnAdultReached;
 
     private void Start()
     {
@@ -86,9 +88,13 @@ public class GhostEvolution : MonoBehaviour
     private void Update()
     {
         if (popupOpen || currentStage == EvolutionStage.Adult)
+        {
+            ClearCountdownText();
             return;
+        }
 
         elapsedTime += Time.deltaTime;
+        UpdateCountdownText();
 
         if (elapsedTime >= nextEvolutionDelay)
         {
@@ -104,7 +110,14 @@ public class GhostEvolution : MonoBehaviour
             return;
 
         if (evolutionText != null)
-            evolutionText.text = "Une évolution est disponible ! Choisissez une voie pour votre fantôme.";
+        {
+            if (currentStage == EvolutionStage.Baby)
+                evolutionText.text = "Your baby ghost evolved! How do you think it will turn out?";
+            else if (currentStage == EvolutionStage.Teen)
+                evolutionText.text = "Your teen ghost evolved! How do you think it will turn out?";
+        }
+
+        SetChoiceButtonTexts();
 
         evolutionPopup.SetActive(true);
         popupOpen = true;
@@ -112,27 +125,95 @@ public class GhostEvolution : MonoBehaviour
         ghostUI?.SetActionButtonsInteractable(false);
     }
 
+    private void SetChoiceButtonTexts()
+    {
+        if (choiceAButton == null || choiceBButton == null || choiceCButton == null || choiceRandomButton == null)
+            return;
+
+        if (currentStage == EvolutionStage.Baby)
+        {
+            SetButtonText(choiceAButton, "cute");
+            SetButtonText(choiceBButton, "spooky");
+            SetButtonText(choiceCButton, "mysterious");
+        }
+        else if (currentStage == EvolutionStage.Teen)
+        {
+            SetButtonText(choiceAButton, "chic");
+            SetButtonText(choiceBButton, "sinister");
+            SetButtonText(choiceCButton, "mystical");
+        }
+        else
+        {
+            SetButtonText(choiceAButton, "Choice A");
+            SetButtonText(choiceBButton, "Choice B");
+            SetButtonText(choiceCButton, "Choice C");
+        }
+
+        SetButtonText(choiceRandomButton, "I don't know");
+    }
+
+    private void SetButtonText(Button button, string text)
+    {
+        if (button == null)
+            return;
+
+        var label = button.GetComponentInChildren<TextMeshProUGUI>();
+        if (label != null)
+            label.text = text;
+    }
+
+    private void UpdateCountdownText()
+    {
+        if (countdownText == null)
+            return;
+
+        float remainingSeconds = Mathf.Max(0f, nextEvolutionDelay - elapsedTime);
+        countdownText.text = $"Something is happening! In {Mathf.CeilToInt(remainingSeconds)} seconds";
+    }
+
+    private void ClearCountdownText()
+    {
+        if (countdownText != null)
+            countdownText.text = string.Empty;
+    }
+
     private void HandleChoice(EvolutionChoice choice)
     {
+        bool willReachAdult = currentStage == EvolutionStage.Teen;
         AdvanceStage();
-        
+
         if (evolutionPopup != null)
             evolutionPopup.SetActive(false);
 
         popupOpen = false;
-        ghostStats?.ResumeStatDecay();
-        ghostUI?.SetActionButtonsInteractable(true);
+
+        if (willReachAdult)
+        {
+            ghostStats?.EndGame();
+            ghostUI?.SetActionButtonsInteractable(false);
+        }
+        else
+        {
+            ghostStats?.ResumeStatDecay();
+            ghostUI?.SetActionButtonsInteractable(true);
+        }
+
         OnEvolutionSelected?.Invoke(choice, currentStage);
     }
 
     private void AdvanceStage()
     {
+        Debug.Log("OnAdultReached invoked");
+
         if (currentStage == EvolutionStage.Adult)
             return;
 
         if (currentStage == EvolutionStage.Baby)
             currentStage = EvolutionStage.Teen;
         else if (currentStage == EvolutionStage.Teen)
+        {
             currentStage = EvolutionStage.Adult;
+            OnAdultReached?.Invoke();
+        }
     }
 }
