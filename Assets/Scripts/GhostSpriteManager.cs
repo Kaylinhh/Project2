@@ -97,8 +97,6 @@ public class GhostSpriteManager : MonoBehaviour
 
     private void OnEvolutionChosen(GhostEvolution.EvolutionChoice choice, GhostEvolution.EvolutionStage stage)
     {
-        
-    Debug.Log($"Evolution reçue : {choice} / {stage}");
-    ApplyEvolution(choice, stage);
+        ApplyEvolution(choice, stage);
     }
 }

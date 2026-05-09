@@ -30,8 +30,6 @@ public class GhostUI : MonoBehaviour
 
     private void OnEnable()
     {
-        Debug.Log($"GhostUI OnEnable — ghostEvolution: {ghostEvolution}");
-
         if (gameOverPanel != null)
             gameOverPanel.SetActive(false);
 
@@ -52,18 +50,18 @@ public class GhostUI : MonoBehaviour
         if (ghostStats != null)
         {
             if (feedButton != null)
-                feedButton.onClick.AddListener(ghostStats.Feed);
+                feedButton.onClick.AddListener(() => { AudioManager.Instance?.PlayButtonClickSFX(); ghostStats.Feed(); });
             if (playButton != null)
-                playButton.onClick.AddListener(ghostStats.Play);
+                playButton.onClick.AddListener(() => { AudioManager.Instance?.PlayButtonClickSFX(); ghostStats.Play(); });
             if (sleepButton != null)
-                sleepButton.onClick.AddListener(ghostStats.Sleep);
+                sleepButton.onClick.AddListener(() => { AudioManager.Instance?.PlayButtonClickSFX(); ghostStats.Sleep(); });
         }
 
         if (restartButton != null)
-            restartButton.onClick.AddListener(RestartGame);
+            restartButton.onClick.AddListener(() => { AudioManager.Instance?.PlayButtonClickSFX(); RestartGame(); });
 
         if (endGameRestartButton != null)
-            endGameRestartButton.onClick.AddListener(RestartGame);
+            endGameRestartButton.onClick.AddListener(() => { AudioManager.Instance?.PlayButtonClickSFX(); RestartGame(); });
     }
 
     private void OnDisable()
@@ -76,11 +74,11 @@ public class GhostUI : MonoBehaviour
             ghostStats.OnGameOver -= HandleGameOver;
 
             if (feedButton != null)
-                feedButton.onClick.RemoveListener(ghostStats.Feed);
+                feedButton.onClick.RemoveListener(() => { AudioManager.Instance?.PlayButtonClickSFX(); ghostStats.Feed(); });
             if (playButton != null)
-                playButton.onClick.RemoveListener(ghostStats.Play);
+                playButton.onClick.RemoveListener(() => { AudioManager.Instance?.PlayButtonClickSFX(); ghostStats.Play(); });
             if (sleepButton != null)
-                sleepButton.onClick.RemoveListener(ghostStats.Sleep);
+                sleepButton.onClick.RemoveListener(() => { AudioManager.Instance?.PlayButtonClickSFX(); ghostStats.Sleep(); });
         }
 
         if (ghostEvolution != null)
@@ -89,10 +87,10 @@ public class GhostUI : MonoBehaviour
         }
 
         if (restartButton != null)
-            restartButton.onClick.RemoveListener(RestartGame);
+            restartButton.onClick.RemoveListener(() => { AudioManager.Instance?.PlayButtonClickSFX(); RestartGame(); });
 
         if (endGameRestartButton != null)
-            endGameRestartButton.onClick.RemoveListener(RestartGame);
+            endGameRestartButton.onClick.RemoveListener(() => { AudioManager.Instance?.PlayButtonClickSFX(); RestartGame(); });
     }
 
     private void UpdateHunger(float value)
@@ -144,6 +142,8 @@ public class GhostUI : MonoBehaviour
         if (gameOverPanel != null)
             gameOverPanel.SetActive(true);
 
+        AudioManager.Instance?.PlayGameOverSFX();
+
         if (ghostAnimation != null)
             ghostAnimation.enabled = false;
 
@@ -162,7 +162,6 @@ public class GhostUI : MonoBehaviour
 
     private void HandleEndGame()
     {
-        Debug.Log("HandleEndGame called");
         ghostStats?.EndGame();
         StartCoroutine(ShowEndGamePanelAfterDelay(3f));
     }
@@ -172,6 +171,8 @@ public class GhostUI : MonoBehaviour
         yield return new WaitForSeconds(delay);
         if (endGamePanel != null)
             endGamePanel.SetActive(true);
+
+        AudioManager.Instance?.PlayEndGameSFX();
 
         if (ghostAnimation != null)
             ghostAnimation.enabled = false;

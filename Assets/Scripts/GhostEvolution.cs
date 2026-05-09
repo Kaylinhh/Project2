@@ -59,25 +59,25 @@ public class GhostEvolution : MonoBehaviour
     private void OnEnable()
     {
         if (choiceAButton != null)
-            choiceAButton.onClick.AddListener(OnChoiceA);
+            choiceAButton.onClick.AddListener(() => { AudioManager.Instance?.PlayButtonClickSFX(); OnChoiceA(); });
         if (choiceBButton != null)
-            choiceBButton.onClick.AddListener(OnChoiceB);
+            choiceBButton.onClick.AddListener(() => { AudioManager.Instance?.PlayButtonClickSFX(); OnChoiceB(); });
         if (choiceCButton != null)
-            choiceCButton.onClick.AddListener(OnChoiceC);
+            choiceCButton.onClick.AddListener(() => { AudioManager.Instance?.PlayButtonClickSFX(); OnChoiceC(); });
         if (choiceRandomButton != null)
-            choiceRandomButton.onClick.AddListener(OnChoiceRandom);
+            choiceRandomButton.onClick.AddListener(() => { AudioManager.Instance?.PlayButtonClickSFX(); OnChoiceRandom(); });
     }
 
     private void OnDisable()
     {
         if (choiceAButton != null)
-            choiceAButton.onClick.RemoveListener(OnChoiceA);
+            choiceAButton.onClick.RemoveListener(() => { AudioManager.Instance?.PlayButtonClickSFX(); OnChoiceA(); });
         if (choiceBButton != null)
-            choiceBButton.onClick.RemoveListener(OnChoiceB);
+            choiceBButton.onClick.RemoveListener(() => { AudioManager.Instance?.PlayButtonClickSFX(); OnChoiceB(); });
         if (choiceCButton != null)
-            choiceCButton.onClick.RemoveListener(OnChoiceC);
+            choiceCButton.onClick.RemoveListener(() => { AudioManager.Instance?.PlayButtonClickSFX(); OnChoiceC(); });
         if (choiceRandomButton != null)
-            choiceRandomButton.onClick.RemoveListener(OnChoiceRandom);
+            choiceRandomButton.onClick.RemoveListener(() => { AudioManager.Instance?.PlayButtonClickSFX(); OnChoiceRandom(); });
     }
 
     private void OnChoiceA() => HandleChoice(EvolutionChoice.A);
@@ -108,6 +108,8 @@ public class GhostEvolution : MonoBehaviour
     {
         if (evolutionPopup == null)
             return;
+
+        AudioManager.Instance?.PlayEvolutionSFX();
 
         if (evolutionText != null)
         {
@@ -203,8 +205,6 @@ public class GhostEvolution : MonoBehaviour
 
     private void AdvanceStage()
     {
-        Debug.Log("OnAdultReached invoked");
-
         if (currentStage == EvolutionStage.Adult)
             return;
 

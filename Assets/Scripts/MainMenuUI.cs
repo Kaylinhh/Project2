@@ -9,13 +9,13 @@ public class MainMenuUI : MonoBehaviour
     private void OnEnable()
     {
         if (startButton != null)
-            startButton.onClick.AddListener(LoadMainScene);
+            startButton.onClick.AddListener(() => { AudioManager.Instance?.PlayButtonClickSFX(); LoadMainScene(); });
     }
 
     private void OnDisable()
     {
         if (startButton != null)
-            startButton.onClick.RemoveListener(LoadMainScene);
+            startButton.onClick.RemoveListener(() => { AudioManager.Instance?.PlayButtonClickSFX(); LoadMainScene(); });
     }
 
     private void LoadMainScene()

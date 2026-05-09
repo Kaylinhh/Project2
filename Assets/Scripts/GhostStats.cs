@@ -4,14 +4,14 @@ using UnityEngine;
 public class GhostStats : MonoBehaviour
 {
     // Stats (0-100)
-    [SerializeField] private float hunger = 50f;
-    [SerializeField] private float happiness = 50f;
-    [SerializeField] private float energy = 50f;
+    [SerializeField] private float hunger = 100f;
+    [SerializeField] private float happiness = 100f;
+    [SerializeField] private float energy = 100f;
 
     // Stat decrease/increase rate (per second)
-    [SerializeField] private float hungerDecreaseRate = 5f;
-    [SerializeField] private float happinessDecreaseRate = 3f;
-    [SerializeField] private float energyDecreaseRate = 2f;
+    [SerializeField] private float hungerDecreaseRate = 7f;
+    [SerializeField] private float happinessDecreaseRate = 5f;
+    [SerializeField] private float energyDecreaseRate = 4f;
 
     // Amounts changed by actions
     [SerializeField] private float feedAmount = 30f;
@@ -28,8 +28,6 @@ public class GhostStats : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log($"Update on {gameObject.name} — instanceID: {GetInstanceID()}, pauseStatDecay: {pauseStatDecay}");
-
         if (isGameOver || pauseStatDecay)
             return;
 
@@ -41,7 +39,6 @@ public class GhostStats : MonoBehaviour
 
     public void PauseStatDecay()
     {
-        Debug.Log($"PauseStatDecay called on {gameObject.name} — instanceID: {GetInstanceID()}");
         pauseStatDecay = true;
     }
 
@@ -63,7 +60,6 @@ public class GhostStats : MonoBehaviour
     public void Feed()
     {
         SetHunger(hunger + feedAmount);
-        Debug.Log($"Feed! Hunger: {hunger:F1}");
     }
 
     /// <summary>Play with the ghost (increases Happiness)</summary>
@@ -71,7 +67,6 @@ public class GhostStats : MonoBehaviour
     {
         SetHappiness(happiness + playAmount);
         SetEnergy(energy - 10f); // Playing causes fatigue
-        Debug.Log($"Play! Happiness: {happiness:F1}, Energy: {energy:F1}");
     }
 
     /// <summary>Make the ghost sleep (increases Energy)</summary>
@@ -79,7 +74,6 @@ public class GhostStats : MonoBehaviour
     {
         SetEnergy(energy + sleepAmount);
         SetHunger(hunger + 10f); // Sleeping increases hunger
-        Debug.Log($"Sleep! Energy: {energy:F1}, Hunger: {hunger:F1}");
     }
 
     private void SetHunger(float value)
